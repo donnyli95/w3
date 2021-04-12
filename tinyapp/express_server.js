@@ -51,9 +51,13 @@ app.get("/u/:shortURL", (req, res) => {
 
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  console.log(req.params)
   delete urlDatabase[req.params.shortURL];
   res.redirect("/urls");
+})
+
+app.post("/urls/:shortURL/edit", (req, res) => {
+  let shortURL = req.params.shortURL
+  res.redirect(`/urls/${shortURL}`);
 })
 
 
