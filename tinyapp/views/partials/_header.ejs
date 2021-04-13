@@ -8,6 +8,17 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
+          <% if(username !== undefined && username.username.length > 0){ %>
+            <form class="d-flex" action="/logout" method="POST">
+              <h4 class="form-control me-2"><%- username.username%></h4>
+              <button type="submit" class="btn btn-dark">Logout</button>
+            </form>
+          <% } else{ %>  
+            <form class="d-flex" action="/login" method="POST">
+              <input class="form-control me-2" name="username" type="text" >
+              <button type="submit" class="btn btn-light">Login</button>
+            </form>
+          <% } %>
       </div>
     </div>
   </nav>
