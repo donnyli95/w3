@@ -22,6 +22,9 @@ app.listen(PORT, () => {
 });
 
 app.get("/", (req, res) => {
+  res.cookie("cookie1", req.body);
+  console.log("real cookie", req.cookies);
+  console.log("singed cookies", req.signedCookies);
   res.send("Hello!");
 });
 
@@ -77,6 +80,8 @@ app.post("/urls/:shortURL/edit", (req, res) => {
 
 
 app.post("/login", (req, res) => {
+  res.cookie("username", req.body);
+  console.log(res.cookies);
   res.redirect(`/urls`);
 });
 
@@ -85,9 +90,7 @@ app.post("/logout", (req, res) => {
     urls: urlDatabase,
     username: req.cookies
   };
-  console.log(templateVars.username);
   res.clearCookie("user_id");
-  console.log(templateVars.username);
   res.redirect("/urls");
 });
 
@@ -99,17 +102,15 @@ app.get("/register", (req, res) => {
 });
 
 app.post("/register", (req, res) => {
-  res.cookie("testVar", req.body);
   // let randomID = generateRandomString();
   // res.cookie(randomID, req.body);
   // users[randomID] = {
   //   id: randomID,
   //   email: req.cookies.email,
-  //   password: req.cookies.password
-  // 
-  console.log(res.body);
-  console.log(res.cookies, req.body);
-  res.redirect("/urls");
+  //   password: req.cookies.psw
+  // }
+  // console.log(req.cookies.email);
+  // res.redirect("/urls");
 });
 
 app.post("/registerTest", (req, res) => {
