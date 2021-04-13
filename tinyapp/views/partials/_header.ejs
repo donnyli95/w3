@@ -5,20 +5,21 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-      <div class="navbar-nav ml-auto">
+      <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         <% if(username !== undefined && username.username.length > 0){ %>
-        <div class="navbar-nav ml-auto">
           <form class="d-flex" action="/logout" method="POST">
             <h4>Logged In As: <%- username.username%></h4>
             <button type="submit" class="btn btn-dark">Logout</button>
           </form>
-        </div>
         <% } else{ %>  
           <form class="d-flex" action="/login" method="POST">
-            <input name="username" type="text" >
+            <input name="username" type="text" required>
             <button type="submit" class="btn btn-light">Login</button>
+          </form>
+          <form class="d-flex" action="/registerTest" method="POST">
+            <button type="submit" class="btn btn-light">Register</button>
           </form>
         <% } %>
       </div>

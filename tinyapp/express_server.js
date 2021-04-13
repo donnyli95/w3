@@ -1,22 +1,21 @@
+// express server setup
 const express = require("express");
 const app = express();
 const PORT = 8080;
-
+// ejs import
 app.set("view engine", "ejs");
-
-
+// body parser middleware
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({extended: true}));
-
-const generateRandomString = require("./randomString");
-
+// cookie parser middleware
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
+// random string helper function
+const generateRandomString = require("./randomString");
+// import data
+const { urlDatabase } = require('./data');
+const { users } = require('./data');
 
-const urlDatabase = {
-  "b2xVn2": "http://www.lighthouselabs.ca",
-  "9sm5xK": "http://www.google.com"
-};
 
 app.listen(PORT, () => {
   console.log(`Example app listening on port ${PORT}`);
@@ -39,7 +38,10 @@ app.get("/urls", (req, res) => {
 });
 
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  const templateVars = { 
+    username: req.cookies["username"]
+  };
+  res.render("urls_new", templateVars);
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -80,6 +82,7 @@ app.post("/login", (req, res) => {
 });
 
 app.post("/logout", (req, res) => {
+
   res.clearCookie("username");
   res.redirect("/urls");
 });
@@ -89,4 +92,21 @@ app.get("/register", (req, res) => {
     username: req.cookies["username"]
    }
   res.render("register", templateVars)
+});
+
+app.post("/register", (req, res) => {
+  res.cookie("email", req.body.email);
+  res.cookie("password", req.body.psw);
+  let randomID = generateRandomString();
+  users[randomID] = {
+    id: randomID,
+    email: req.cookies["email"],
+    password: req.cookies["password"]
+  }
+  console.log(users[randomID]);
+  res.redirect("/urls");
+});
+
+app.post("/registerTest", (req, res) => {
+  res.redirect("/register");
 });
