@@ -141,7 +141,7 @@ app.post("/register", (req, res) => {
   } else if (emailExists(req.body.email, users)) {
     res.status(400);
     console.log(res.statusCode);
-    res.redirect("/register");
+    res.redirect("/login");
   } else {
     users[randomID] = {
       id: randomID,
