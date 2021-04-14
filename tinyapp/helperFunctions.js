@@ -1,4 +1,4 @@
-const { users, urlDatabase } = require('./data.js');
+// const { users, urlDatabase } = require('./data.js');
 
 const generateRandomString = () => {
   let result = '';
@@ -14,7 +14,7 @@ const generateRandomString = () => {
 
 const emailExists = (string, object) => {
   let emailArray = [];
-  for (randomID in object) {
+  for (let randomID in object) {
     emailArray.push(object[randomID].email);
   }
 
@@ -28,14 +28,14 @@ const emailExists = (string, object) => {
 const passwordMatch = (email, password, database) => {
   let emailArray = [];
   let passwordArray = [];
-  for (randomID in database) {
+  for (let randomID in database) {
     emailArray.push(database[randomID].email);
     passwordArray.push(database[randomID].password);
   }
 
   let indicator;
   if (emailArray.includes(email)) {
-    for (index in email) {
+    for (let index in email) {
       if (emailArray[index] === email) {
         indicator = index;
         break;
@@ -43,7 +43,7 @@ const passwordMatch = (email, password, database) => {
     }
   }
 
-  if(password === passwordArray[indicator]) {
+  if (password === passwordArray[indicator]) {
     return true;
   }
 
@@ -52,7 +52,7 @@ const passwordMatch = (email, password, database) => {
 
 
 const getID = (email, password, database) => {
-  for (objects in database) {
+  for (let objects in database) {
     if (database[objects].email === email && database[objects].password === password) {
       return database[objects].id;
     }
@@ -61,12 +61,12 @@ const getID = (email, password, database) => {
 
 const urlsForUser = (id, database) => {
   let newURLS = [];
-  for (data in database) {
+  for (let data in database) {
     if (database[data].userID === id) {
-      newURLS[data] = { 
+      newURLS[data] = {
         longURL:  database[data].longURL,
-        userID: database[data].userID 
-      }
+        userID: database[data].userID
+      };
     }
   }
   return newURLS;

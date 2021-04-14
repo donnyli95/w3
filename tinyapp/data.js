@@ -5,23 +5,23 @@ const urlDatabase = {
   "bunbu2": { longURL: "www.https://www.lighthouselabs.ca/", userID: "bunbun" },
 };
 
-const users = { 
+const users = {
   "userRandomID": {
-    id: "userRandomID", 
-    email: "user@example.com", 
+    id: "userRandomID",
+    email: "user@example.com",
     password: "purple-monkey-dinosaur"
   },
- "user2RandomID": {
-    id: "user2RandomID", 
-    email: "user2@example.com", 
+  "user2RandomID": {
+    id: "user2RandomID",
+    email: "user2@example.com",
     password: "dishwasher-funk"
   },
   "bunbun": {
-    id: "bunbun", 
-    email: "bun@bun.com", 
+    id: "bunbun",
+    email: "bun@bun.com",
     password: "bunbun"
   }
-}
+};
 
 module.exports = { urlDatabase, users };
 
