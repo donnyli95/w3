@@ -2,7 +2,7 @@ const urlDatabase = {
   "b2xVn2": { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   "9sm5xK": { longURL: "https://www.google.ca", userID: "aJ48lW" },
   "bunbu1": { longURL: "https://www.crunchyroll.com", userID: "bunbun" },
-  "bunbu2": { longURL: "www.https://www.lighthouselabs.ca/", userID: "bunbun" },
+  "bunbu2": { longURL: "https://www.lighthouselabs.ca/", userID: "bunbun" },
 };
 
 const users = {
