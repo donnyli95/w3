@@ -1,4 +1,6 @@
-// const { users, urlDatabase } = require('./data.js');
+
+//hashing password with bcrypt
+const bcrypt = require('bcrypt');
 
 const generateRandomString = () => {
   let result = '';
@@ -43,7 +45,7 @@ const passwordMatch = (email, password, database) => {
     }
   }
 
-  if (password === passwordArray[indicator]) {
+  if (bcrypt.compareSync(password, passwordArray[indicator])) {
     return true;
   }
 
@@ -51,9 +53,9 @@ const passwordMatch = (email, password, database) => {
 };
 
 
-const getID = (email, password, database) => {
+const getID = (email, database) => {
   for (let objects in database) {
-    if (database[objects].email === email && database[objects].password === password) {
+    if (database[objects].email === email) {
       return database[objects].id;
     }
   }
@@ -75,5 +77,7 @@ const urlsForUser = (id, database) => {
 module.exports = { generateRandomString, emailExists, passwordMatch, getID, urlsForUser };
 
 // test assertions
+// const { users, urlDatabase } = require('./data.js');
+
 // console.log(getID("user@example.com", "purple-monkey-dinosaur", users).id);
 // console.log(urlsForUser("bunbun", urlDatabase).userID);

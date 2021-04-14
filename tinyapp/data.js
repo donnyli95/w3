@@ -1,3 +1,7 @@
+//hashing existing passwords with bcrypt
+// so i can compare in my matching password helper function
+const bcrypt = require('bcrypt');
+
 const urlDatabase = {
   "b2xVn2": { longURL: "https://www.tsn.ca", userID: "aJ48lW" },
   "9sm5xK": { longURL: "https://www.google.ca", userID: "aJ48lW" },
@@ -9,17 +13,17 @@ const users = {
   "userRandomID": {
     id: "userRandomID",
     email: "user@example.com",
-    password: "purple-monkey-dinosaur"
+    password: bcrypt.hashSync("purple-monkey-dinosaur", 10)
   },
   "user2RandomID": {
     id: "user2RandomID",
     email: "user2@example.com",
-    password: "dishwasher-funk"
+    password: bcrypt.hashSync("dishwasher-funk", 10)
   },
   "bunbun": {
     id: "bunbun",
     email: "bun@bun.com",
-    password: "bunbun"
+    password: bcrypt.hashSync("bunbun", 10)
   }
 };
 

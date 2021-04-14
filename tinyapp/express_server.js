@@ -14,6 +14,9 @@ app.use(bodyParser.urlencoded({ extended: true }));
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
 
+//hashing password with bcrypt
+const bcrypt = require('bcrypt');
+
 // import helper functions
 const { generateRandomString } = require("./helperFunctions");
 const { emailExists } = require("./helperFunctions");
@@ -146,7 +149,7 @@ app.post("/register", (req, res) => {
     users[randomID] = {
       id: randomID,
       email: req.body.email,
-      password: req.body.psw
+      password: bcrypt.hashSync(req.body.psw, 10)
     };
     res.cookie("user_id", randomID);
     res.redirect("/urls");
@@ -174,7 +177,7 @@ app.post("/login", (req, res) => {
     console.log(res.statusCode);
     res.redirect("/login");
   } else {
-    res.cookie("user_id", getID(req.body.email, req.body.psw, users));
+    res.cookie("user_id", getID(req.body.email, users));
     res.redirect("/urls");
   }
 });
