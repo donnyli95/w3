@@ -6,7 +6,7 @@ const PORT = 8080;
 app.set("view engine", "ejs");
 // body parser middleware
 const bodyParser = require("body-parser");
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 // cookie parser middleware
 const cookieParser = require("cookie-parser");
 app.use(cookieParser());
@@ -15,6 +15,7 @@ const { generateRandomString } = require("./helperFunctions");
 const { emailExists } = require("./helperFunctions");
 const { passwordMatch } = require("./helperFunctions")
 const { getID } = require("./helperFunctions")
+const { urlsForUser } = require("./helperFunctions")
 // import data
 const { urlDatabase } = require('./data');
 const { users } = require('./data');
@@ -33,25 +34,33 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  const templateVars = { 
-    urls: urlDatabase,
+  console.log(req.cookies)
+  const templateVars = {
+    urls: urlsForUser(req.cookies["user_id"], urlDatabase),
     serverCookies: req.cookies
   };
   res.render("urls_index", templateVars);
 });
 
-// to be updated
 app.get("/urls/new", (req, res) => {
-  res.render("/urls/new");
+  const templateVars = {
+    urls: urlDatabase,
+    serverCookies: req.cookies
+  };
 
+  if (Object.keys(req.cookies).length !== 0) {
+    res.render("urls_new", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/urls/:shortURL", (req, res) => {
-  const templateVars = { 
+  const templateVars = {
     shortURL: req.params.shortURL,
-    longURL: urlDatabase[req.params.shortURL],
+    longURL: urlDatabase[req.params.shortURL].longURL,
     serverCookies: req.cookies
-   }
+  }
   res.render("urls_show", templateVars)
 });
 
@@ -62,7 +71,7 @@ app.post("/urls", (req, res) => {
 });
 
 app.get("/u/:shortURL", (req, res) => {
-  const longURL = urlDatabase[req.params.shortURL];
+  const longURL = urlDatabase[req.params.shortURL].longURL;
   res.redirect(longURL);
 });
 
@@ -78,9 +87,9 @@ app.post("/urls/:shortURL/edit", (req, res) => {
 });
 
 app.get("/register", (req, res) => {
-  const templateVars = { 
+  const templateVars = {
     serverCookies: req.cookies
-   }
+  }
   res.render("register", templateVars)
 });
 
@@ -102,10 +111,10 @@ app.post("/register", (req, res) => {
   } else {
     users[randomID] = {
       id: randomID,
-      email: req.body.email, 
+      email: req.body.email,
       password: req.body.psw
     }
-    res.cookie("user_id", req.body);
+    res.cookie("user_id", randomID);
     res.redirect("/urls");
   }
 
@@ -117,7 +126,7 @@ app.post("/loginHeader", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  const templateVars = { 
+  const templateVars = {
     urls: urlDatabase,
     serverCookies: req.cookies
   };

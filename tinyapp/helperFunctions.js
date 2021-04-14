@@ -1,4 +1,4 @@
-const { users } = require('./data.js');
+const { users, urlDatabase } = require('./data.js');
 
 const generateRandomString = () => {
   let result = '';
@@ -23,7 +23,7 @@ const emailExists = (string, object) => {
   } else {
     return false;
   }
-}
+};
 
 const passwordMatch = (email, password, database) => {
   let emailArray = [];
@@ -48,17 +48,32 @@ const passwordMatch = (email, password, database) => {
   }
 
   return false;
-}
+};
 
 
 const getID = (email, password, database) => {
   for (objects in database) {
     if (database[objects].email === email && database[objects].password === password) {
-      return database[objects];
+      return database[objects].id;
     }
   }
-}
+};
 
+const urlsForUser = (id, database) => {
+  let newURLS = [];
+  for (data in database) {
+    if (database[data].userID === id) {
+      newURLS[data] = { 
+        longURL:  database[data].longURL,
+        userID: database[data].userID 
+      }
+    }
+  }
+  return newURLS;
+};
 
+module.exports = { generateRandomString, emailExists, passwordMatch, getID, urlsForUser };
 
-module.exports = { generateRandomString, emailExists, passwordMatch, getID };
+// test assertions
+// console.log(getID("user@example.com", "purple-monkey-dinosaur", users).id);
+// console.log(urlsForUser("bunbun", urlDatabase).userID);
