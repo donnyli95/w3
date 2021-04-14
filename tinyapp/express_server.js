@@ -10,10 +10,7 @@ app.set("view engine", "ejs");
 const bodyParser = require("body-parser");
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// cookie parser middleware
-// const cookieParser = require("cookie-parser");
-// app.use(cookieParser());
-//replaced with cookie-session
+//replaced cookie-parser with cookie-session
 const cookieSession = require('cookie-session');
 app.use(cookieSession({
   name: 'session',
@@ -23,16 +20,16 @@ app.use(cookieSession({
 //hashing password with bcrypt
 const bcrypt = require('bcrypt');
 
+// import data
+const { urlDatabase } = require('./data');
+const { users } = require('./data');
+
 // import helper functions
 const { generateRandomString } = require("./helperFunctions");
 const { emailExists } = require("./helperFunctions");
 const { passwordMatch } = require("./helperFunctions");
 const { getID } = require("./helperFunctions");
 const { urlsForUser } = require("./helperFunctions");
-
-// import data
-const { urlDatabase } = require('./data');
-const { users } = require('./data');
 
 // Server listening
 app.listen(PORT, () => {
@@ -104,7 +101,7 @@ app.get("/u/:shortURL", (req, res) => {
   res.redirect(urlDatabase[req.params.shortURL].longURL);
 });
 
-// Delete button
+// Delete URLs from list
 app.post("/urls/:shortURL/delete", (req, res) => {
   if (req.session["user_id"]) {
     delete urlDatabase[req.params.shortURL];
@@ -112,7 +109,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   res.redirect("/urls");
 });
 
-// Edit button
+// Redirects to Tiny URL info page
 app.post("/urls/:shortURL/edit", (req, res) => {
   if (req.session["user_id"]) {
     let shortURL = req.params.shortURL;
@@ -121,6 +118,11 @@ app.post("/urls/:shortURL/edit", (req, res) => {
     res.redirect("/urls");
   }
 });
+
+//Update long URL of tiny URL
+app.post("/urls_show", (req, res) => {
+  res.redirect("/urls");
+})
 
 // Header buttons
 app.post("/registerHeader", (req, res) => {

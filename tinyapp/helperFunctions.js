@@ -1,7 +1,7 @@
-
 //hashing password with bcrypt
 const bcrypt = require('bcrypt');
 
+//Returns random string, 6 characters long
 const generateRandomString = () => {
   let result = '';
   let characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
@@ -22,9 +22,10 @@ const emailExists = (string, object) => {
 
   if (emailArray.includes(string)) {
     return true;
-  } else {
-    return false;
-  }
+  } 
+  
+  return false;
+
 };
 
 const passwordMatch = (email, password, database) => {
@@ -61,23 +62,18 @@ const getID = (email, database) => {
   }
 };
 
-const urlsForUser = (id, database) => {
-  let newURLS = [];
-  for (let data in database) {
-    if (database[data].userID === id) {
-      newURLS[data] = {
-        longURL:  database[data].longURL,
-        userID: database[data].userID
+const urlsForUser = (id, userObj) => {
+  let newURLs = {};
+  for (let data in userObj) {
+    if (userObj[data].userID === id) {
+      newURLs[data] = {
+        longURL:  userObj[data].longURL,
+        userID: userObj[data].userID
       };
     }
   }
-  return newURLS;
+  return newURLs;
 };
 
 module.exports = { generateRandomString, emailExists, passwordMatch, getID, urlsForUser };
 
-// test assertions
-// const { users, urlDatabase } = require('./data.js');
-
-// console.log(getID("user@example.com", "purple-monkey-dinosaur", users).id);
-// console.log(urlsForUser("bunbun", urlDatabase).userID);
