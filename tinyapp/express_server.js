@@ -42,7 +42,8 @@ app.get("/urls", (req, res) => {
 
 // to be updated
 app.get("/urls/new", (req, res) => {
-  res.redirect("/urls");
+  res.render("/urls/new");
+
 });
 
 app.get("/urls/:shortURL", (req, res) => {
