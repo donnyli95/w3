@@ -28,4 +28,3 @@ const users = {
 };
 
 module.exports = { urlDatabase, users };
-
