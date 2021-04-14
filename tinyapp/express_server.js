@@ -13,6 +13,7 @@ app.use(cookieParser());
 // import helper functions
 const { generateRandomString } = require("./helperFunctions");
 const { emailExists } = require("./helperFunctions");
+const { passwordMatch } = require("./helperFunctions")
 // import data
 const { urlDatabase } = require('./data');
 const { users } = require('./data');
@@ -38,8 +39,9 @@ app.get("/urls", (req, res) => {
   res.render("urls_index", templateVars);
 });
 
+// to be updated
 app.get("/urls/new", (req, res) => {
-  res.render("urls_new");
+  res.redirect("/urls");
 });
 
 app.get("/urls/:shortURL", (req, res) => {
@@ -73,25 +75,15 @@ app.post("/urls/:shortURL/edit", (req, res) => {
   res.redirect(`/urls/${shortURL}`);
 });
 
-
-app.post("/login", (req, res) => {
-  res.redirect(`/urls`);
-});
-
-app.post("/logout", (req, res) => {
-  const templateVars = { 
-    urls: urlDatabase,
-    serverCookies: req.cookies
-  };
-  res.clearCookie("user_id");
-  res.redirect("/urls");
-});
-
 app.get("/register", (req, res) => {
   const templateVars = { 
     serverCookies: req.cookies
    }
   res.render("register", templateVars)
+});
+
+app.post("/registerHeader", (req, res) => {
+  res.redirect("/register");
 });
 
 app.post("/register", (req, res) => {
@@ -106,7 +98,7 @@ app.post("/register", (req, res) => {
   } else {
     users[randomID] = {
       id: randomID,
-      email: req.body.email, // req.cookies.email??
+      email: req.body.email, 
       password: req.body.psw
     }
     res.cookie("user_id", req.body);
@@ -115,8 +107,9 @@ app.post("/register", (req, res) => {
 
 });
 
-app.post("/registerTest", (req, res) => {
-  res.redirect("/register");
+
+app.post("/loginHeader", (req, res) => {
+  res.redirect("/login");
 });
 
 app.get("/login", (req, res) => {
@@ -128,4 +121,21 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
+
+  if (!emailExists(req.body.email, users)) {
+    res.status(403)
+    console.log(res.statusCode);
+    res.redirect("/login")
+  } else if (!passwordMatch(req.body.email, req.body.psw, users)) {
+    res.status(403)
+    res.redirect("/login")
+  } else {
+    res.cookie("user_id", req.body);
+    res.redirect("/urls");
+  }
+});
+
+app.post("/logout", (req, res) => {
+  res.clearCookie("user_id");
+  res.redirect("/urls");
 });

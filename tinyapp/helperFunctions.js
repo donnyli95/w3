@@ -25,5 +25,31 @@ const emailExists = (string, object) => {
   }
 }
 
+const passwordMatch = (email, password, database) => {
+  let emailArray = [];
+  let passwordArray = [];
+  for (randomID in database) {
+    emailArray.push(database[randomID].email);
+    passwordArray.push(database[randomID].password);
+  }
 
-module.exports = { generateRandomString, emailExists };
+  let indicator;
+  if (emailArray.includes(email)) {
+    for (index in email) {
+      if (emailArray[index] === email) {
+        indicator = index;
+        break;
+      }
+    }
+  }
+
+  if(password === passwordArray[indicator]) {
+    return true;
+  }
+
+  return false;
+}
+
+
+
+module.exports = { generateRandomString, emailExists, passwordMatch };
