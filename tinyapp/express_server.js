@@ -14,6 +14,7 @@ app.use(cookieParser());
 const { generateRandomString } = require("./helperFunctions");
 const { emailExists } = require("./helperFunctions");
 const { passwordMatch } = require("./helperFunctions")
+const { getID } = require("./helperFunctions")
 // import data
 const { urlDatabase } = require('./data');
 const { users } = require('./data');
@@ -91,9 +92,11 @@ app.post("/register", (req, res) => {
 
   if (req.body.email.length === 0 || req.body.psw.length === 0) {
     res.status(400)
+    console.log(res.statusCode);
     res.redirect("/register")
   } else if (emailExists(req.body.email, users)) {
     res.status(400)
+    console.log(res.statusCode);
     res.redirect("/register")
   } else {
     users[randomID] = {
@@ -128,9 +131,10 @@ app.post("/login", (req, res) => {
     res.redirect("/login")
   } else if (!passwordMatch(req.body.email, req.body.psw, users)) {
     res.status(403)
+    console.log(res.statusCode);
     res.redirect("/login")
   } else {
-    res.cookie("user_id", req.body);
+    res.cookie("user_id", getID(req.body.email, req.body.psw, users));
     res.redirect("/urls");
   }
 });

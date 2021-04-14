@@ -51,5 +51,14 @@ const passwordMatch = (email, password, database) => {
 }
 
 
+const getID = (email, password, database) => {
+  for (objects in database) {
+    if (database[objects].email === email && database[objects].password === password) {
+      return database[objects];
+    }
+  }
+}
 
-module.exports = { generateRandomString, emailExists, passwordMatch };
+
+
+module.exports = { generateRandomString, emailExists, passwordMatch, getID };
