@@ -10,7 +10,7 @@
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
         <% if(serverCookies.user_id !== undefined) { %>
           <form class="d-flex" action="/logout" method="POST">
-            <h4>Logged In As: <%= serverCookies.user_id.email %></h4>
+            <h4>Logged In As: <%= displayName %></h4>
             <button type="submit" class="btn btn-dark">Logout</button>
           </form>
         <% } else { %>  

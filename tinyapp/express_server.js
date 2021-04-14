@@ -34,12 +34,16 @@ app.get("/urls.json", (req, res) => {
 });
 
 app.get("/urls", (req, res) => {
-  console.log(req.cookies)
-  const templateVars = {
-    urls: urlsForUser(req.cookies["user_id"], urlDatabase),
-    serverCookies: req.cookies
-  };
-  res.render("urls_index", templateVars);
+  if (Object.keys(req.cookies).length !== 0) {
+    const templateVars = {
+      urls: urlsForUser(req.cookies["user_id"], urlDatabase),
+      serverCookies: req.cookies, 
+      displayName: users[req.cookies["user_id"]].email
+    };
+    res.render("urls_index", templateVars);
+  } else {
+    res.redirect("/login");
+  }
 });
 
 app.get("/urls/new", (req, res) => {
@@ -59,7 +63,8 @@ app.get("/urls/:shortURL", (req, res) => {
   const templateVars = {
     shortURL: req.params.shortURL,
     longURL: urlDatabase[req.params.shortURL].longURL,
-    serverCookies: req.cookies
+    serverCookies: req.cookies,
+    displayName: users[req.cookies["user_id"]].email
   }
   res.render("urls_show", templateVars)
 });
@@ -77,13 +82,19 @@ app.get("/u/:shortURL", (req, res) => {
 
 
 app.post("/urls/:shortURL/delete", (req, res) => {
-  delete urlDatabase[req.params.shortURL];
+  if (req.cookies["user_id"]) {
+    delete urlDatabase[req.params.shortURL];
+  }
   res.redirect("/urls");
 });
 
 app.post("/urls/:shortURL/edit", (req, res) => {
-  let shortURL = req.params.shortURL
-  res.redirect(`/urls/${shortURL}`);
+  if (req.cookies["user_id"]) {
+    let shortURL = req.params.shortURL
+    res.redirect(`/urls/${shortURL}`);
+  } else {
+    res.redirect("/urls");
+  }
 });
 
 app.get("/register", (req, res) => {
