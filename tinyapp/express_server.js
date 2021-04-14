@@ -60,7 +60,6 @@ app.get("/urls", (req, res) => {
     };
     res.render("urls_index", templateVars);
   } else {
-    res.status(403);
     res.sendStatus(403);
   }
 });
@@ -92,11 +91,9 @@ app.get("/urls/:shortURL", (req, res) => {
       };
       res.render("urls_show", templateVars);
     } else {
-      res.status(401);
       res.sendStatus(401);
     }
   } else {
-    res.status(403);
     res.sendStatus(403);
   }
 });
@@ -116,7 +113,6 @@ app.post("/urls", (req, res) => {
     };
     res.redirect("/urls");
   } else {
-    res.status(401);
     res.sendStatus(401);
   }
 });
@@ -174,10 +170,8 @@ app.post("/register", (req, res) => {
   let randomID = generateRandomString();
 
   if (req.body.email.length === 0 || req.body.psw.length === 0) {
-    res.status(400);
     res.sendStatus(400);
   } else if (emailExists(req.body.email, users)) {
-    res.status(400);
     res.sendStatus(400);
   } else {
     users[randomID] = {
@@ -206,12 +200,9 @@ app.get("/login", (req, res) => {
 });
 
 app.post("/login", (req, res) => {
-
   if (!emailExists(req.body.email, users)) {
-    res.status(403);
-    res.sendStatus(403);
+    res.sendStatus(404);
   } else if (!passwordMatch(req.body.email, req.body.psw, users)) {
-    res.status(403);
     res.sendStatus(403);
   } else {
     req.session["user_id"] = getID(req.body.email, users);
