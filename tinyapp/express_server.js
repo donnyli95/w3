@@ -24,11 +24,7 @@ const bcrypt = require('bcrypt');
 const { urlDatabase, users } = require('./data');
 
 // import helper functions
-const { generateRandomString } = require("./helperFunctions");
-const { emailExists } = require("./helperFunctions");
-const { passwordMatch } = require("./helperFunctions");
-const { getID } = require("./helperFunctions");
-const { urlsForUser } = require("./helperFunctions");
+const { generateRandomString, emailExists, passwordMatch, getID, urlsForUser} = require("./helperFunctions");
 
 // Server listening
 app.listen(PORT, () => {
@@ -40,7 +36,7 @@ app.get("/urls.json", (req, res) => {
   res.json(urlDatabase);
 });
 
-//Default page, should redirect to something?
+//Redirect to URLs
 app.get("/", (req, res) => {
   if (Object.keys(req.session).length > 1) {
     res.redirect("/urls");
@@ -69,12 +65,7 @@ app.get("/urls", (req, res) => {
 //Goes to new URL creation page
 app.get("/urls/new", (req, res) => {
   if (req.session["user_id"]) {
-    const templateVars = {
-      urls: urlDatabase,
-      serverCookies: req.session,
-      displayName: users[req.session["user_id"]].email
-    };
-    res.render("urls_new", templateVars);
+    res.render("urls_new");
   } else {
     res.redirect("/login");
   }
@@ -82,13 +73,13 @@ app.get("/urls/new", (req, res) => {
 
 // Shows specific URL information
 app.get("/urls/:shortURL", (req, res) => {
-  let userArray = Object.keys(urlsForUser(req.session["user_id"], urlDatabase));
+  let urlArray = Object.keys(urlsForUser(req.session["user_id"], urlDatabase));
   // Check if logged in
   if (req.session["user_id"]) {
     // Check if user owns shortURL
-    if (userArray.includes(req.params.shortURL)) {
+    if (urlArray.includes(req.params.shortURL)) {
       const templateVars = {
-        userArray: userArray,
+        urlArray: urlArray,
         shortURL: req.params.shortURL,
         longURL: urlDatabase[req.params.shortURL].longURL,
         serverCookies: req.session,
@@ -97,7 +88,7 @@ app.get("/urls/:shortURL", (req, res) => {
       res.render("urls_show", templateVars);
     } else {
       const templateVars = {
-        userArray: userArray,
+        urlArray: urlArray,
         shortURL: req.params.shortURL,
         longURL: urlDatabase[req.params.shortURL].longURL,
         serverCookies: req.session,
@@ -131,16 +122,16 @@ app.post("/urls", (req, res) => {
   //Check if logged in
   if (req.session["user_id"]) {
     //Check if address includes 'http'
-    if (req.body.longURL.includes('http')) {
+    if (req.body.newURL.includes('http://') || req.body.newURL.includes('https://')) {
       let shortURL = generateRandomString();
       urlDatabase[shortURL] = {
-        longURL: req.body.longURL,
+        longURL: req.body.newURL,
         userID: req.session["user_id"]
       };
       res.redirect(`/urls/${shortURL}`);
     } else {
       const templateVars = {
-        errorMessage: "Did you include 'http?'",
+        errorMessage: "Did you include 'http(s)://?'",
       };
       res.status(403).render("errors", templateVars);
     }
@@ -152,11 +143,11 @@ app.post("/urls", (req, res) => {
   }
 });
 
-//Update long URL of tiny URL
+//Update long URL of short URL
 app.post("/urls/:shortURL", (req, res) => {
   //Check if logged in
   if (req.session["user_id"]) {
-    if (req.body.newURL.includes('http')) {
+    if (req.body.newURL.includes('http://') || req.body.newURL.includes('https://')) {
       urlDatabase[req.params.shortURL] = {
         longURL: req.body.newURL,
         userID: req.session["user_id"]
@@ -164,7 +155,7 @@ app.post("/urls/:shortURL", (req, res) => {
       res.redirect(`/urls`);
     } else {
       const templateVars = {
-        errorMessage: "Please add 'http', thank you!",
+        errorMessage: "Please add 'http(s)://, thank you!",
       };
       res.status(403).render("errors", templateVars);
     }
@@ -189,7 +180,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   }
 });
 
-// Redirects to Tiny URL info page
+// Redirects to short URL info page
 app.post("/urls/:shortURL/edit", (req, res) => {
   if (req.session["user_id"]) {
     let shortURL = req.params.shortURL;
@@ -216,7 +207,7 @@ app.post("/loginHeader", (req, res) => {
 
 // Login Get Method
 app.get("/login", (req, res) => {
-  if (Object.keys(req.session).length > 1) {
+  if (req.session["user_id"]) {
     res.redirect("/urls");
   } else {
     const templateVars = {
@@ -225,12 +216,11 @@ app.get("/login", (req, res) => {
     };
     res.render("login", templateVars);
   }
-
 });
 
 // Register Get Method
 app.get("/register", (req, res) => {
-  if (Object.keys(req.session).length > 1) {
+  if (req.session["user_id"]) {
     res.redirect("/urls");
   } else {
     const templateVars = {
@@ -243,11 +233,13 @@ app.get("/register", (req, res) => {
 
 //Login Post Method
 app.post("/login", (req, res) => {
+  //Check if user exists
   if (!emailExists(req.body.email, users)) {
     const templateVars = {
       errorMessage: "Please register first!",
     };
     res.status(404).render("errors", templateVars);
+    //Check if passwords match
   } else if (!passwordMatch(req.body.email, req.body.psw, users)) {
     const templateVars = {
       errorMessage: "Wrong password :(",
@@ -262,12 +254,13 @@ app.post("/login", (req, res) => {
 //Register Post Method
 app.post("/register", (req, res) => {
   let randomID = generateRandomString();
-
-  if (req.body.email.length === 0 || req.body.psw.length === 0) {
+  //Check if email & password inputs are empty 
+  if (!req.body.email.length || !req.body.psw.length) {
     const templateVars = {
       errorMessage: "Please Fill Out Both Fields",
     };
     res.status(400).render("errors", templateVars);
+    // Check if user exists
   } else if (emailExists(req.body.email, users)) {
     const templateVars = {
       errorMessage: "You Already Have An Account",
@@ -282,10 +275,7 @@ app.post("/register", (req, res) => {
     req.session["user_id"] = randomID;
     res.redirect("/urls");
   }
-
 });
-
-
 
 //Logout
 app.post("/logout", (req, res) => {

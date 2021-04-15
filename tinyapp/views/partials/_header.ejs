@@ -1,26 +1,28 @@
 <header>
   <nav class="navbar navbar-expand-md navbar-dark bg-success">
     <a class="navbar-brand" href="/urls">TinyApp</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+      aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <% if(typeof displayName !== 'undefined') { %>
+        <% if(typeof displayName !=='undefined') { %>
           <form class="d-flex" action="/logout" method="POST">
-            <h4>Logged In As: <%= displayName %></h4>
+            <h4>Logged In As: <%= displayName %>
+            </h4>
             <button type="submit" class="btn btn-dark">Logout</button>
           </form>
-        <% } else { %>  
-          <form class="d-flex" action="/loginHeader" method="POST">
-            <button type="submit" class="btn btn-light">Login</button>
-          </form>
-          <form class="d-flex" action="/registerHeader" method="POST">
-            <button type="submit" class="btn btn-light">Register</button>
-          </form>
-        <% } %>
+          <% } else { %>
+            <form class="d-flex" action="/loginHeader" method="POST">
+              <button type="submit" class="btn btn-light">Login</button>
+            </form>
+            <form class="d-flex" action="/registerHeader" method="POST">
+              <button type="submit" class="btn btn-light">Register</button>
+            </form>
+            <% } %>
       </div>
     </div>
   </nav>
