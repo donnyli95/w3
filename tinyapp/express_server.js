@@ -47,6 +47,7 @@ app.get("/", (req, res) => {
 
 // Shows list of urls
 app.get("/urls", (req, res) => {
+  //Check if logged in
   if (req.session["user_id"]) {
     const templateVars = {
       urls: urlsForUser(req.session["user_id"], urlDatabase),
@@ -64,6 +65,7 @@ app.get("/urls", (req, res) => {
 
 //Goes to new URL creation page
 app.get("/urls/new", (req, res) => {
+  //Check if logged in
   if (req.session["user_id"]) {
     res.render("urls_new");
   } else {
@@ -107,6 +109,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 //Redirect to actual url link when clicked
 app.get("/u/:shortURL", (req, res) => {
+  //Check if logged in
   if (req.session["user_id"]) {
     res.redirect(urlDatabase[req.params.shortURL].longURL);
   } else {
@@ -169,6 +172,7 @@ app.post("/urls/:shortURL", (req, res) => {
 
 // Delete URLs from list
 app.post("/urls/:shortURL/delete", (req, res) => {
+  //Check if logged in
   if (req.session["user_id"]) {
     delete urlDatabase[req.params.shortURL];
     res.redirect(`/urls`);
@@ -182,6 +186,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
 
 // Redirects to short URL info page
 app.post("/urls/:shortURL/edit", (req, res) => {
+  //Check if logged in
   if (req.session["user_id"]) {
     let shortURL = req.params.shortURL;
     res.redirect(`/urls/${shortURL}`);
@@ -207,6 +212,7 @@ app.post("/loginHeader", (req, res) => {
 
 // Login Get Method
 app.get("/login", (req, res) => {
+  //Check if logged in
   if (req.session["user_id"]) {
     res.redirect("/urls");
   } else {
@@ -220,6 +226,7 @@ app.get("/login", (req, res) => {
 
 // Register Get Method
 app.get("/register", (req, res) => {
+  //Check if logged in
   if (req.session["user_id"]) {
     res.redirect("/urls");
   } else {
