@@ -21,8 +21,7 @@ app.use(cookieSession({
 const bcrypt = require('bcrypt');
 
 // import data
-const { urlDatabase } = require('./data');
-const { users } = require('./data');
+const { urlDatabase, users } = require('./data');
 
 // import helper functions
 const { generateRandomString } = require("./helperFunctions");
@@ -52,7 +51,7 @@ app.get("/", (req, res) => {
 
 // Shows list of urls
 app.get("/urls", (req, res) => {
-  if (Object.keys(req.session).length > 1) {
+  if (req.session["user_id"]) {
     const templateVars = {
       urls: urlsForUser(req.session["user_id"], urlDatabase),
       serverCookies: req.session,
@@ -69,7 +68,7 @@ app.get("/urls", (req, res) => {
 
 //Goes to new URL creation page
 app.get("/urls/new", (req, res) => {
-  if (Object.keys(req.session).length > 1) {
+  if (req.session["user_id"]) {
     const templateVars = {
       urls: urlDatabase,
       serverCookies: req.session,
@@ -85,7 +84,7 @@ app.get("/urls/new", (req, res) => {
 app.get("/urls/:shortURL", (req, res) => {
   let userArray = Object.keys(urlsForUser(req.session["user_id"], urlDatabase));
   // Check if logged in
-  if (Object.keys(req.session).length > 1) {
+  if (req.session["user_id"]) {
     // Check if user owns shortURL
     if (userArray.includes(req.params.shortURL)) {
       const templateVars = {
@@ -117,7 +116,7 @@ app.get("/urls/:shortURL", (req, res) => {
 
 //Redirect to actual url link when clicked
 app.get("/u/:shortURL", (req, res) => {
-  if (Object.keys(req.session).length > 1) {
+  if (req.session["user_id"]) {
     res.redirect(urlDatabase[req.params.shortURL].longURL);
   } else {
     const templateVars = {
@@ -130,7 +129,7 @@ app.get("/u/:shortURL", (req, res) => {
 // Adding more urls
 app.post("/urls", (req, res) => {
   //Check if logged in
-  if (Object.keys(req.session).length > 1) {
+  if (req.session["user_id"]) {
     //Check if address includes 'http'
     if (req.body.longURL.includes('http')) {
       let shortURL = generateRandomString();
@@ -181,11 +180,13 @@ app.post("/urls/:shortURL", (req, res) => {
 app.post("/urls/:shortURL/delete", (req, res) => {
   if (req.session["user_id"]) {
     delete urlDatabase[req.params.shortURL];
+    res.redirect(`/urls`);
+  } else {
+    const templateVars = {
+      errorMessage: "You can't delete what's not yours",
+    }
+    res.status(403).render("errors", templateVars);
   }
-  const templateVars = {
-    errorMessage: "You can't delete what's not yours",
-  }
-  res.status(403).render("errors", templateVars);
 });
 
 // Redirects to Tiny URL info page
@@ -202,11 +203,13 @@ app.post("/urls/:shortURL/edit", (req, res) => {
 });
 
 
-// Header buttons/links
+// Header Link Buttons
+// Register Link Button
 app.post("/registerHeader", (req, res) => {
   res.redirect("/register");
 });
 
+//Log in Link Button
 app.post("/loginHeader", (req, res) => {
   res.redirect("/login");
 });
