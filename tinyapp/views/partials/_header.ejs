@@ -8,7 +8,7 @@
       <div class="navbar-nav">
         <a class="nav-item nav-link" href="/urls">My URLs</a>
         <a class="nav-item nav-link" href="/urls/new">Create New URL</a>
-        <% if(serverCookies.user_id !== undefined) { %>
+        <% if(typeof displayName !== 'undefined') { %>
           <form class="d-flex" action="/logout" method="POST">
             <h4>Logged In As: <%= displayName %></h4>
             <button type="submit" class="btn btn-dark">Logout</button>
