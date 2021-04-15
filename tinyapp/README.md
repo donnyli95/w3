@@ -4,10 +4,10 @@ TinyApp is a full stack web application built with Node and Express that allows 
 
 ## Final Product
 
-!["Creating a New URL"](tinyapp/docs/newURL.png)
-!["Error HTML: Not Logged In"](tinyapp/docs/notLoggedIn.png)
-!["Update Existing URL"](tinyapp/docs/updateURL.png)
-!["URL Index Page, Logged In"](tinyapp/docs/urlIndex.png)
+!["Creating a New URL"](https://github.com/donnyli95/w3/blob/master/tinyapp/docs/newURL.png)
+!["Error HTML: Not Logged In"](https://github.com/donnyli95/w3/blob/master/tinyapp/docs/notLoggedIn.png)
+!["Update Existing URL"](https://github.com/donnyli95/w3/blob/master/tinyapp/docs/updateURL.png)
+!["URL Index Page, Logged In"](https://github.com/donnyli95/w3/blob/master/tinyapp/docs/urlIndex.png)
 
 ## Dependencies
 
