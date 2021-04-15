@@ -22,7 +22,7 @@ const emailExists = (string, object) => {
 
   if (emailArray.includes(string)) {
     return true;
-  } 
+  }
   
   return false;
 

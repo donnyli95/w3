@@ -73,9 +73,9 @@ describe("urlsForUser", function() {
     const expected = {
       bunbu1: { longURL: 'https://www.crunchyroll.com', userID: 'bunbun' },
       bunbu2: { longURL: 'https://www.lighthouselabs.ca/', userID: 'bunbun' },
-    }
+    };
     console.log(result.length);
-      assert.deepEqual(result, expected);
+    assert.deepEqual(result, expected);
   });
 
   it("returns empty object otherwise", function() {

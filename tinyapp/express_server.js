@@ -61,7 +61,7 @@ app.get("/urls", (req, res) => {
   } else {
     const templateVars = {
       errorMessage: "PLease Log In First :)",
-    }
+    };
     res.status(403).render("urls_index", templateVars);
   }
 });
@@ -103,13 +103,13 @@ app.get("/urls/:shortURL", (req, res) => {
         serverCookies: req.session,
         displayName: users[req.session["user_id"]].email,
         errorMessage: "Not Yours!",
-      }
+      };
       res.status(403).render("urls_show", templateVars);
     }
   } else {
     const templateVars = {
       errorMessage: "Seriously, log in first!",
-    }
+    };
     res.status(403).render("urls_show", templateVars);
   }
 });
@@ -121,7 +121,7 @@ app.get("/u/:shortURL", (req, res) => {
   } else {
     const templateVars = {
       errorMessage: "This is not yours",
-    }
+    };
     res.status(403).render("errors", templateVars);
   }
 });
@@ -141,13 +141,13 @@ app.post("/urls", (req, res) => {
     } else {
       const templateVars = {
         errorMessage: "Did you include 'http?'",
-      }
+      };
       res.status(403).render("errors", templateVars);
     }
   } else {
     const templateVars = {
       errorMessage: "Please. Log. In.",
-    }
+    };
     res.status(403).render("errors", templateVars);
   }
 });
@@ -165,13 +165,13 @@ app.post("/urls/:shortURL", (req, res) => {
     } else {
       const templateVars = {
         errorMessage: "Please add 'http', thank you!",
-      }
+      };
       res.status(403).render("errors", templateVars);
     }
   } else {
     const templateVars = {
       errorMessage: "Log. INNNNN",
-    }
+    };
     res.status(403).render("errors", templateVars);
   }
 });
@@ -184,7 +184,7 @@ app.post("/urls/:shortURL/delete", (req, res) => {
   } else {
     const templateVars = {
       errorMessage: "You can't delete what's not yours",
-    }
+    };
     res.status(403).render("errors", templateVars);
   }
 });
@@ -197,7 +197,7 @@ app.post("/urls/:shortURL/edit", (req, res) => {
   } else {
     const templateVars = {
       errorMessage: "You can't edit what's not yours",
-    }
+    };
     res.status(403).render("errors", templateVars);
   }
 });
@@ -246,12 +246,12 @@ app.post("/login", (req, res) => {
   if (!emailExists(req.body.email, users)) {
     const templateVars = {
       errorMessage: "Please register first!",
-    }
+    };
     res.status(404).render("errors", templateVars);
   } else if (!passwordMatch(req.body.email, req.body.psw, users)) {
     const templateVars = {
       errorMessage: "Wrong password :(",
-    }
+    };
     res.status(404).render("errors", templateVars);
   } else {
     req.session["user_id"] = getID(req.body.email, users);
@@ -266,12 +266,12 @@ app.post("/register", (req, res) => {
   if (req.body.email.length === 0 || req.body.psw.length === 0) {
     const templateVars = {
       errorMessage: "Please Fill Out Both Fields",
-    }
+    };
     res.status(400).render("errors", templateVars);
   } else if (emailExists(req.body.email, users)) {
     const templateVars = {
       errorMessage: "You Already Have An Account",
-    }
+    };
     res.status(400).render("errors", templateVars);
   } else {
     users[randomID] = {
