@@ -110,11 +110,11 @@ app.get("/urls/:shortURL", (req, res) => {
 //Redirect to actual url link when clicked
 app.get("/u/:shortURL", (req, res) => {
   //Check if logged in
-  if (req.session["user_id"]) {
+  if (urlDatabase[req.params.shortURL]) {
     res.redirect(urlDatabase[req.params.shortURL].longURL);
   } else {
     const templateVars = {
-      errorMessage: "This is not yours",
+      errorMessage: "Short URL Does Not Exist",
     };
     res.status(403).render("errors", templateVars);
   }
