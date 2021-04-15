@@ -261,7 +261,7 @@ app.post("/login", (req, res) => {
 //Register Post Method
 app.post("/register", (req, res) => {
   let randomID = generateRandomString();
-  //Check if email & password inputs are empty 
+  //Check if email & password inputs are empty
   if (!req.body.email.length || !req.body.psw.length) {
     const templateVars = {
       errorMessage: "Please Fill Out Both Fields",
