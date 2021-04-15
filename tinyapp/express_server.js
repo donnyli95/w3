@@ -84,15 +84,29 @@ app.get("/urls/new", (req, res) => {
 // Shows specific URL information
 app.get("/urls/:shortURL", (req, res) => {
   let userArray = Object.keys(urlsForUser(req.session["user_id"], urlDatabase));
-
-  if (Object.keys(req.session).length > 1 && userArray.includes(req.params.shortURL)) {
-    const templateVars = {
-      shortURL: req.params.shortURL,
-      longURL: urlDatabase[req.params.shortURL].longURL,
-      serverCookies: req.session,
-      displayName: users[req.session["user_id"]].email
-    };
-    res.render("urls_show", templateVars);
+  // Check if logged in
+  if (Object.keys(req.session).length > 1) {
+    // Check if user owns shortURL
+    if (userArray.includes(req.params.shortURL)) {
+      const templateVars = {
+        userArray: userArray,
+        shortURL: req.params.shortURL,
+        longURL: urlDatabase[req.params.shortURL].longURL,
+        serverCookies: req.session,
+        displayName: users[req.session["user_id"]].email
+      };
+      res.render("urls_show", templateVars);
+    } else {
+      const templateVars = {
+        userArray: userArray,
+        shortURL: req.params.shortURL,
+        longURL: urlDatabase[req.params.shortURL].longURL,
+        serverCookies: req.session,
+        displayName: users[req.session["user_id"]].email,
+        errorMessage: "Not Yours!",
+      }
+      res.status(403).render("urls_show", templateVars);
+    }
   } else {
     const templateVars = {
       errorMessage: "Seriously, log in first!",
@@ -115,16 +129,25 @@ app.get("/u/:shortURL", (req, res) => {
 
 // Adding more urls
 app.post("/urls", (req, res) => {
-  if (Object.keys(req.session).length > 1 && req.body.longURL.includes('http')) {
-    let shortURL = generateRandomString();
-    urlDatabase[shortURL] = {
-      longURL: req.body.longURL,
-      userID: req.session["user_id"]
-    };
-    res.redirect(`/urls/${shortURL}`);
+  //Check if logged in
+  if (Object.keys(req.session).length > 1) {
+    //Check if address includes 'http'
+    if (req.body.longURL.includes('http')) {
+      let shortURL = generateRandomString();
+      urlDatabase[shortURL] = {
+        longURL: req.body.longURL,
+        userID: req.session["user_id"]
+      };
+      res.redirect(`/urls/${shortURL}`);
+    } else {
+      const templateVars = {
+        errorMessage: "Did you include 'http?'",
+      }
+      res.status(403).render("errors", templateVars);
+    }
   } else {
     const templateVars = {
-      errorMessage: "Did you include 'http'?",
+      errorMessage: "Please. Log. In.",
     }
     res.status(403).render("errors", templateVars);
   }
@@ -132,15 +155,23 @@ app.post("/urls", (req, res) => {
 
 //Update long URL of tiny URL
 app.post("/urls/:shortURL", (req, res) => {
-  if (req.session["user_id"] && req.body.newURL.includes('http')) {
-    urlDatabase[req.params.shortURL] = {
-      longURL: req.body.newURL,
-      userID: req.session["user_id"]
-    };
-    res.redirect(`/urls`);
+  //Check if logged in
+  if (req.session["user_id"]) {
+    if (req.body.newURL.includes('http')) {
+      urlDatabase[req.params.shortURL] = {
+        longURL: req.body.newURL,
+        userID: req.session["user_id"]
+      };
+      res.redirect(`/urls`);
+    } else {
+      const templateVars = {
+        errorMessage: "Please add 'http', thank you!",
+      }
+      res.status(403).render("errors", templateVars);
+    }
   } else {
     const templateVars = {
-      errorMessage: "This only works if you include 'http'",
+      errorMessage: "Log. INNNNN",
     }
     res.status(403).render("errors", templateVars);
   }
